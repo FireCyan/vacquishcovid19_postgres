@@ -11,5 +11,7 @@ One should be able to do 1 and 2 with the code provided here.
 ## Part 1: Data warehouse
 Check the Jupyter Notebook "covid19_aws_create_datawarehouse.ipynb" for setting up the data warehouse of Covid-19 cases and vaccination.
 
+Note that the database used is AWS RDS Postgres. It is possible to use local Postgres for building the warehouse, one just needs to install postgres and change the connection parameters to one's local host (i.e., adapt the code in aws_util.py)
+
 ## part 2: Data analysis and visualisation
 Check the Jupyter Notebook "covid19_query_process_and_plot" for analysis and visualisation
