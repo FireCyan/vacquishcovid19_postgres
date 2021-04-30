@@ -1,0 +1,63 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Apr 11 11:42:36 2021
+
+@author: john.yang
+"""
+###############################################################################
+# Initial imports
+
+import os, sys, re 
+from pathlib import Path 
+import pandas as pd
+import numpy as np
+
+
+import dash
+import dash_bootstrap_components as dbc
+import dash_html_components as html
+
+# if 'CDSW_DOMAIN' not in os.environ:
+from jupyter_dash import JupyterDash
+
+# from covid_app.layout_main import layout
+from layout_main import layout
+from callbacks import register_callbacks
+
+###############################################################################
+# Start coding
+
+# For the structure of the app, I took Phillippe's advice from this thread:
+# https://community.plotly.com/t/dash-callback-in-a-separate-file/14122/15
+
+##### Use Dash if running the script in Anaconda prompt #####
+##### Use JupyterDash if running in Spyder (or Jupyter Notebook) #####
+
+shell = ''
+try:
+    shell = get_ipython().__class__.__name__
+    if shell == 'ZMQInteractiveShell':
+        app = JupyterDash(__name__, external_stylesheets =[dbc.themes.BOOTSTRAP])
+    elif shell == 'TerminalInteractiveShell':
+        app = dash.Dash(__name__)
+        # , external_stylesheets =[dbc.themes.BOOTSTRAP]
+    else:
+        app = dash.Dash(__name__, external_stylesheets =[dbc.themes.BOOTSTRAP])
+except NameError:
+    app = dash.Dash(__name__, external_stylesheets =[dbc.themes.BOOTSTRAP])
+        
+app.layout = layout
+# app.layout = html.Div([layout])
+register_callbacks(app)
+
+app.config.suppress_callback_exceptions = True
+
+if __name__ == '__main__':
+    if os.environ.get("USERNAME") == 'john':
+        # app.run_server(host="127.0.0.1", debug=False, port=int(os.environ['CDSW_APP_PORT']))
+        # app.run_server(host="127.0.0.1", debug=False, port=int(os.environ['CDSW_APP_PORT']))
+        # app.run_server(host="0.0.0.0", debug=False, port=int(os.environ['CDSW_APP_PORT']))
+        app.run_server(host="127.0.0.1", port='8052', debug=True)
+        # app.run_server(debug=True)
+    else:
+        app.run_server(port='8052', debug=False)
