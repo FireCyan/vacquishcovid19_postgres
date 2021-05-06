@@ -1,7 +1,7 @@
 # vacquishcovid19_postgres
 
  * [Project overview](#Project-overview)
- * [Quick run](#Quick-run)
+ * [Quick start](#Quick-start)
  * [Source data location and outline](#Source-data-location-and-outline)
  * [DB schema and data dictionary](#DB-schema-and-data-dictionary)
  * [Data cleaning](#Data-cleaning)
@@ -13,7 +13,7 @@ The project aims to show the relationship between the number of daily Covid-19 c
 
 The project processes 2 data sources from the Center For Systems Science and Engineering at Johns Hopkins University and from a scientific online publication platform Our World in Data.
 
-The dashboard is hosted on AWS EC2 and can be viewed at [www.vacquishcovid19.com](www.vacquishcovid19.com). The site updates its DB from the source data and the dashboard at 11am and 9pm Sydney Time (GMT+10)
+The dashboard is hosted on AWS EC2 and can be viewed at [www.vacquishcovid19.com](http://www.vacquishcovid19.com). The site updates its DB from the source data and the dashboard at 11am and 9pm Sydney Time (GMT+10)
 
 These 2 data sources have been uploaded and and updated to GitHub
 - [source data from CSSE at JHU](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data)
@@ -26,7 +26,7 @@ The work can be roughly divided into 3 parts
 2. Data analysis and visualisation
 3. Deployment on AWS
 
-One should be able to do 1 and 2 with the code provided here, using the "main_script.py" script file. 
+One should be able to do 1 and 2 with the code provided here, using the `main_script.py` script file. 
 
 Note that the database used is AWS RDS Postgres. It is possible to use local Postgres for building the warehouse, one just needs to install postgres and change the connection parameters to one's local host (i.e., adapt the code in aws_util.py)
 
