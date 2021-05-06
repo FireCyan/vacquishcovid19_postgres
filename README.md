@@ -24,17 +24,22 @@ These 2 data sources have been uploaded and and updated to GitHub
 The work can be roughly divided into 3 parts
 1. Data warehouse creation
 2. Data analysis and visualisation
-3. Deployment on AWS
+3. Hosting dashboards
 
 One should be able to do 1 and 2 with the code provided here, using the `main_script.py` script file. 
+
+For hosting the Dash app, check the folder `covid_app`. One would need to set up AWS EC2 to host it, or can just set it up on localhost.
 
 Note that the database used is AWS RDS Postgres. It is possible to use local Postgres for building the warehouse, one just needs to install postgres and change the connection parameters to one's local host (i.e., adapt the code in aws_util.py)
 
 ### Part 1: Data warehouse
-Check the Jupyter Notebook "covid19_aws_create_datawarehouse.ipynb" for setting up the data warehouse of Covid-19 cases and vaccination.
+Check the Jupyter Notebook `covid19_aws_create_datawarehouse.ipynb` for setting up the data warehouse of Covid-19 cases and vaccination.
 
 ### part 2: Data analysis and visualisation
-Check the Jupyter Notebook "covid19_query_process_and_plot" for analysis and visualisation
+Check the Jupyter Notebook `covid19_query_process_and_plot` for analysis and visualisation
+
+### Part 3: Hosting dashboards
+Chech the `covid_app` folder
 
 ---
 
