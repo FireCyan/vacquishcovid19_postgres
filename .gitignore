@@ -2,3 +2,6 @@
 pgadmin_pwd.txt
 *.csv
 credential.cfg
+*.pyc
+*.pyc
+temp-plot.html

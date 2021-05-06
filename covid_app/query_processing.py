@@ -20,7 +20,7 @@ current_file_path = Path(os.path.realpath(__file__))
 # https://stackoverflow.com/questions/2860153/how-do-i-get-the-parent-directory-in-python
 current_wd = current_file_path.parent.parent.absolute()
 
-print(current_wd)
+# print(current_wd)
 
 modules=[current_wd]
 
