@@ -85,10 +85,13 @@ etl.process_country_location()
 # Data analysis and visualisation
 ###################################
 import query_processing as qp
+from plotly.offline import plot
 
 df_case_loc_vac = qp.combine_case_vac_lookup()
 df_case_vac, df_curr_case_vac = qp.get_adjusted_people_vaccinated(df_case_loc_vac)
 
 import covid_plot as cp
 
-cp.plot_latest_case_vac(df_curr_case_vac)
+fig = cp.plot_latest_case_vac(df_curr_case_vac, y_col='past_week_daily_cases_per_100k')
+
+plot(fig)
