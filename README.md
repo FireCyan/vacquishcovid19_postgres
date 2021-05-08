@@ -1,6 +1,7 @@
 # vacquishcovid19_postgres
 
  * [Project overview](#Project-overview)
+ * [Installation](#Installation)
  * [Quick start](#Quick-start)
  * [Source data location and outline](#Source-data-location-and-outline)
  * [DB schema and data dictionary](#DB-schema-and-data-dictionary)
@@ -18,6 +19,16 @@ The dashboard is hosted on AWS EC2 and can be viewed at [www.vacquishcovid19.com
 These 2 data sources have been uploaded and and updated to GitHub
 - [source data from CSSE at JHU](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data)
 - [source data from Our World in Data](https://github.com/owid/covid-19-data/tree/master/public/data)
+---
+
+## Installation
+```
+$ pip install -r requirements.txt
+```
+Or use conda install if using Anaconda
+```
+$ conda install --file requirements.txt
+```
 ---
  
 ## Quick start
