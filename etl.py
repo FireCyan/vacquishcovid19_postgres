@@ -530,7 +530,11 @@ def process_vaccine_data(process_all=True):
         INSERT INTO vac ({})
         VALUES {}
         ON CONFLICT (location, date_org)
-        DO NOTHING
+        DO UPDATE SET
+            vaccine = EXCLUDED.vaccine,
+            total_vaccinations = EXCLUDED.total_vaccinations,
+            people_vaccinated = EXCLUDED.people_vaccinated,
+            people_fully_vaccinated = EXCLUDED.people_fully_vaccinated
         """.format(cols, ",".join(values))
         
         # print(query)
