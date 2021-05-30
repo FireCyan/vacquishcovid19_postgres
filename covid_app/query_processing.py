@@ -103,7 +103,7 @@ def get_adjusted_people_vaccinated(df):
     df_case_vac['daily_country_confirmed'] = df_case_vac['daily_country_confirmed'].fillna(0)
 
     # To deal with the issue where France case was retrospectively updated on 2021-05-26
-    mat_neg = (df_case_vac['daily_country_confirmed'] < -0)
+    mat_neg = (df_case_vac['daily_country_confirmed'] < 0)
     df_case_vac.loc[mat_neg, 'daily_country_confirmed'] = np.nan
 
 
