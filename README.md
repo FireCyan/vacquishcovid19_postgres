@@ -238,3 +238,10 @@ The logic for these checks I used is the same for these functions, which is chec
 
 ---
 
+## Issue and solution
+
+- 2021-05-26: There is an retrospective update on France's total case on 2021-05-25 (JHU date) where there was 'patch france data from 05-20-2021 to 05-23-2021'
+    - This requires:
+    1. Downloading the new csv patch files from JHU (from 2021-01-01 to 2021-05-28)
+    2. Re-process these csv files and update them in database
+    3. When doing rolling average, get rid of negative daily cases (retrospective update) for averaging

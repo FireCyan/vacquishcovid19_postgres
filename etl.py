@@ -73,7 +73,7 @@ def preprocess_case_data(list_old='all'):
     print("---------------------------------------")
 
 
-def process_case_data(process_all=False):
+def process_case_data(file_date=None, process_all=False):
     """
     Process case data
         1. For loop through the case csv file
@@ -124,13 +124,29 @@ def process_case_data(process_all=False):
     file_all = aws_util.list_files(case_data_path)
     file_all_old = aws_util.list_files(case_old_data_path)
 
-    if not process_all:
-        print('Determining which {} csv files to process based on csv_record table...'.format(process_name))
-        sql = csv_select % ('case')
-        df_csv_record = pd.read_sql_query(sql, conn)
-        file_processed_list = df_csv_record['file_name'].to_list() # files that have been recorded in db and processed before
-        # print(file_processed_list)
+    # Manually specify what files to process and update if file_date is not None
+    file_to_dl = []
+    if file_date is not None:
+        if len(file_date) == 1:
+            file_to_dl.append(datetime.strftime(datetime.strptime(file_date[0], '%Y-%m-%d'), '%m-%d-%Y'))
+        else:
+            start_date = datetime.strptime(file_date[0], '%Y-%m-%d')
+            end_date = datetime.strptime(file_date[1], '%Y-%m-%d')
+            delta = end_date - start_date
+            for i in range(delta.days + 1):
+                day = start_date + timedelta(days=i)
+                file_to_dl.append(datetime.strftime(day,'%m-%d-%Y'))
+    
+    print('Determining which {} csv files to process based on csv_record table...'.format(process_name))
+    sql = csv_select % ('case')
+    df_csv_record = pd.read_sql_query(sql, conn)
+    file_processed_list = df_csv_record['file_name'].to_list() # files that have been recorded in db and processed before
+    # print(file_processed_list)
 
+    if file_to_dl:
+        file_to_process = [x for x in file_all if any(substring in x for substring in file_to_dl)] # files that are not recorded in db (not processed before)
+        file_old_to_process =  [x for x in file_all_old if any(substring in x for substring in file_to_dl)]
+    elif not process_all:
         file_to_process = [x for x in file_all if not x in file_processed_list] # files that are not recorded in db (not processed before)
         file_old_to_process =  [x for x in file_all_old if not x in file_processed_list]
     else:
@@ -289,7 +305,11 @@ def process_case_data(process_all=False):
             INSERT INTO daily_case ({})
             VALUES {}
             ON CONFLICT (FIPS, Admin2, Province_State, Country_Region, Last_Update)
-            DO NOTHING
+            DO UPDATE SET
+                Confirmed = EXCLUDED.Confirmed,
+                Deaths = EXCLUDED.Deaths,
+                Recovered = EXCLUDED.Recovered,
+                Active = EXCLUDED.Active
             """.format(cols, ",".join(values))
             
             # print(query)

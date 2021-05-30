@@ -17,7 +17,22 @@ config.read('dl.cfg')
 import aws_util
 
 
-def dl_case_files():
+def dl_case_files(file_date=None):
+
+    # Manually specify what files to download if file_date is not None
+    file_to_dl = []
+    if file_date is not None:
+        if len(file_date) == 1:
+            file_to_dl.append(datetime.strftime(datetime.strptime(file_date[0], '%Y-%m-%d'), '%m-%d-%Y'))
+        else:
+            start_date = datetime.strptime(file_date[0], '%Y-%m-%d')
+            end_date = datetime.strptime(file_date[1], '%Y-%m-%d')
+            delta = end_date - start_date
+            for i in range(delta.days + 1):
+                day = start_date + timedelta(days=i)
+                file_to_dl.append(datetime.strftime(day,'%m-%d-%Y'))
+
+
 
     # Define what date csv files should be downloaded into old format folder
     old_format_dates = [datetime.strptime('2020-01-22', '%Y-%m-%d'), datetime.strptime('2020-03-21', '%Y-%m-%d')]
@@ -80,8 +95,12 @@ def dl_case_files():
     # Read to Pandas
     # https://stackoverflow.com/questions/32400867/pandas-read-csv-from-url
     # Write to file using .to_csv
-
-    list_miss_files = [x for x in list_source_case_files if x not in list_local_case_files]
+    if file_to_dl:
+        # If file_to_dl is NOT empty, then only download files from this list
+        list_miss_files = [x for x in list_source_case_files if any(substring in x for substring in file_to_dl)]
+    else:
+        # If file_to_dl is empty, then just download files that are not logged in csv_record table
+        list_miss_files = [x for x in list_source_case_files if x not in list_local_case_files]
 
     for f in list_miss_files:
         f_date = datetime.strptime(f.split('.')[0], '%m-%d-%Y')

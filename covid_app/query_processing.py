@@ -102,9 +102,17 @@ def get_adjusted_people_vaccinated(df):
     df_case_vac['daily_country_confirmed'] = df_case_vac.groupby('country_region')['country_confirmed'].diff()
     df_case_vac['daily_country_confirmed'] = df_case_vac['daily_country_confirmed'].fillna(0)
 
+    # To deal with the issue where France case was retrospectively updated on 2021-05-26
+    mat_neg = (df_case_vac['daily_country_confirmed'] < -0)
+    df_case_vac[mat_neg]['daily_country_confirmed'] = np.nan
+
+
     # Get past week daily average cases
+    # df_case_vac['past_week_daily_cases'] = (df_case_vac.groupby('country_region')['daily_country_confirmed'].
+    # rolling(window=7, min_periods=7).mean().reset_index(0,drop=True))
+    # After making negative values NAN, change the rolling here min_periods to 1 so that not taking those negative values into calculating 7 days average
     df_case_vac['past_week_daily_cases'] = (df_case_vac.groupby('country_region')['daily_country_confirmed'].
-    rolling(window=7, min_periods=7).mean().reset_index(0,drop=True))
+    rolling(window=7, min_periods=1).mean().reset_index(0,drop=True))
 
 
     ###########################################################################################################################################
