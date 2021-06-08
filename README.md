@@ -12,11 +12,11 @@
 ## Project overview
 The project aims to show the relationship between the number of daily Covid-19 cases and the number of people who have received vaccination by visualisation.
 
-The project processes 2 data sources from the Center For Systems Science and Engineering at Johns Hopkins University and from a scientific online publication platform Our World in Data.
+The project processes 2 data sources, one from the Center For Systems Science and Engineering at Johns Hopkins University and the other from a scientific online publication platform Our World in Data.
 
 The dashboard is hosted on AWS EC2 and can be viewed at [www.vacquishcovid19.com](http://www.vacquishcovid19.com). The site updates its DB from the source data and the dashboard at 11am and 9pm Sydney Time (GMT+10)
 
-These 2 data sources have been uploaded and and updated to GitHub
+These 2 data sources have been uploaded and updated to GitHub
 - [source data from CSSE at JHU](https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data)
 - [source data from Our World in Data](https://github.com/owid/covid-19-data/tree/master/public/data)
 ---
@@ -197,14 +197,14 @@ These inconsistencies and the data cleaning steps are summarised below
         * %Y-%m-%dT%H:%M
         * %m/%d/%y %H:%M
         * %m/%d/%Y %H:%M (Note the capital Y for 4 digit years)
-        * This problem is addressed by a UDF with different cases (in if elif form) to standardise date format and for timestamp
+        * This problem is addressed by a function with different cases (in if elif form) to standardise date format and for timestamp
 
-    * The columns Confirmed, Deaths, Recovered and Active should be integers. However, when loading with IntegerType() in Spark, the values for these columns would become Null
+    * (For Spark version that I did for Capstone project, not for this Postgres project) The columns Confirmed, Deaths, Recovered and Active should be integers. However, when loading with IntegerType() in Spark, the values for these columns would become Null
         * This is resolved by loading them as DoubleType()
         * When querying to form the table, these columns are cast to integer (cast(col AS INT) as col)
 
-    * Due to missing columns for old format csv files, the old format and new format are loaded separately to Spark df
-        * The final result thus needs to combine the 2 tables using built-in function .union()
+    * Due to missing columns for old format csv files, the old format and new format are loaded separately to dfs
+        * The final result thus combine the 2 tables using pd.concat()
     
     * There are quite a few duplicate rows in different csv files, resulting in duplicate rows in the formed table
         * This is addressed by using .dropDuplicates() method at the end with the subset columns ['FIPS', 'Admin2', 'Province_State', 'Country_Region', 'Last_Update']
