@@ -73,7 +73,7 @@ def preprocess_case_data(list_old='all'):
     print("---------------------------------------")
 
 
-def process_case_data(file_date=None, process_all=False):
+def process_case_data(file_date=None, process_all=False, reload_country=None):
     """
     Process case data
         1. For loop through the case csv file
@@ -170,6 +170,10 @@ def process_case_data(file_date=None, process_all=False):
 
             # if using AWS
             df_temp = pd.read_aws_csv(os.path.join(case_data_path, filename))
+
+            #### additional processing (See US 2021-06-01 problem in ReadMe) #####
+            df_temp = misc_processing(df_temp, filename)
+            
             
             
 
@@ -276,6 +280,20 @@ def process_case_data(file_date=None, process_all=False):
         df_all_combined = df_all_combined.drop_duplicates(subset=col_case_dup, keep='first') # Drop duplicated rows, keep only the first one
         print('Bulk inserting processed {} data into {} table...'.format(process_name, process_name))
         print(df_all_combined.head())
+
+        if reload_country:
+            mat_country = df_all_combined['Country_Region'] == reload_country
+            df_all_combined = df_all_combined[mat_country]
+            # To delete all entries in that country and reload the data for that country            
+            sql_delete_records = """
+            DELETE FROM daily_case where (country_region = '{}').
+            """.format(reload_country)
+
+            if file_to_dl:
+                sql_delete_records = sql_delete_records + """ and (date_string between '{}' and '{}')""".format(file_to_dl[0], file_to_dl[-1])
+            
+            cur.execute(sql_delete_records)
+            conn.commit()
 
         ##### For AWS, need to do chunk bulk insertion because AWS RDS cannot handle that many rows insertion at once #####
         n_rows = len(df_all_combined)
@@ -1176,3 +1194,14 @@ def to_timestamp(x):
         return datetime.strptime(x, '%m/%d/%Y %H:%M')
     else:
         return datetime.strptime(x, '%m/%d/%y %H:%M')
+
+def misc_processing(df, filename):
+    df_processed = df.copy()
+    # Convert US Nebraska cases on in 06-01-2021 from 2021-06-01 to 2021-06-02
+    if filename == '06-01-2021.csv':
+        print('processing 06-01-2021.csv Nebraska date problem')
+        mat_nebraska = df_processed['Province_State'] == 'Nebraska'
+        df_processed.loc[mat_nebraska, 'Last_Update'] = df_processed.loc[mat_nebraska, 'Last_Update'].apply(lambda x: x[0:9] +'2' + x[10:])
+    
+
+    return df_processed
