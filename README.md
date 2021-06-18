@@ -251,3 +251,9 @@ The logic for these checks I used is the same for these functions, which is chec
     1. Add a function called misc_processing to change the Last_Update from '2021-06-01' to '2021-06-02' when processing 06-01-2021.csv file in etl.py
     2. Delete old record in 2021-06-01 for US Nebraska (extended a parameter to delete records for specific country and dates in process_case_data() in etl.py)
     3. Re-process and update 2021-06-01 records for US Nebraska
+- 2021-06-12: There is an unusual increase in US daily cases
+    - Issue: The problem is due to US Florida cases' date being timestamped as 2021-06-12 in 06-12-2021.csv file. Usually the timestamp date is 1 day ahead of the file's date (i.e., the Florida date should be 2021-06-13)
+    - Solution:
+    1. Add a function called misc_processing to change the Last_Update from '2021-06-12' to '2021-06-13' when processing 06-12-2021.csv file in etl.py
+    2. Delete old record in 2021-06-12 for US Florida
+    3. Re-process and update 2021-06-11 to 2021-06-13 records for US Florida

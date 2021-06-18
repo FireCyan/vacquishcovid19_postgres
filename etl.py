@@ -1199,9 +1199,15 @@ def misc_processing(df, filename):
     df_processed = df.copy()
     # Convert US Nebraska cases on in 06-01-2021 from 2021-06-01 to 2021-06-02
     if filename == '06-01-2021.csv':
-        print('processing 06-01-2021.csv Nebraska date problem')
+        print('processing 06-01-2021.csv US Nebraska date problem')
         mat_nebraska = df_processed['Province_State'] == 'Nebraska'
         df_processed.loc[mat_nebraska, 'Last_Update'] = df_processed.loc[mat_nebraska, 'Last_Update'].apply(lambda x: x[0:9] +'2' + x[10:])
+
+    if filename == '06-12-2021.csv':
+        print('processing 06-12-2021.csv US Florida date problem')
+        mat_nebraska = df_processed['Province_State'] == 'Florida'
+        df_processed.loc[mat_nebraska, 'Last_Update'] = df_processed.loc[mat_nebraska, 'Last_Update'].apply(lambda x: x[0:8] +'13' + x[10:])
+
     
 
     return df_processed
