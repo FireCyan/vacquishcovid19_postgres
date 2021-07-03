@@ -12,12 +12,16 @@ time_table_drop = "DROP TABLE IF EXISTS dim_time"
 # CREATE TABLES
 ################
 
+# Note that date_string date and Last_Update date are not the same thing
+# One would be the date for the covid case reporting
+# The other is the last time when the number was updated
 case_table_create = ("""
 CREATE TABLE IF NOT EXISTS daily_case (
     FIPS text,
     Admin2 text,
     Province_State text,
     Country_Region text,
+    date_case date,
     date_string text,
     Last_Update text,
     Confirmed int,
@@ -62,7 +66,6 @@ CREATE TABLE IF NOT EXISTS country_loc (
 time_table_create = ("""
 CREATE TABLE IF NOT EXISTS dim_time (
     Last_Update text PRIMARY KEY,
-    date_string text,
     hour int,
     day int,
     week int,
@@ -87,7 +90,7 @@ CREATE TABLE IF NOT EXISTS csv_record (
 ################################################
 
 case_unique_index_create = ("""
-create unique index id_case on daily_case (FIPS, Admin2, Province_State, Country_Region, Last_Update);
+create unique index id_case on daily_case (FIPS, Admin2, Province_State, Country_Region, date_string);
 """)
 
 vac_unique_index_create = ("""
@@ -109,7 +112,7 @@ create unique index id_file_data on csv_record (file_name, data_type);
 
 case_table_insert = ("""
 INSERT INTO daily_case
-(FIPS, Admin2, Province_State, Country_Region, date_string, Last_Update, Confirmed, Deaths, Recovered, Active) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+(FIPS, Admin2, Province_State, Country_Region, date_string, date_case, Last_Update, Confirmed, Deaths, Recovered, Active) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 ON CONFLICT (FIPS, Admin2, Province_State, Country_Region, Last_Update)
 DO NOTHING
 """)

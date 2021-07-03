@@ -168,11 +168,14 @@ def process_case_data(file_date=None, process_all=False, reload_country=None):
             # df_temp = pd.read_csv(os.path.join(case_data_path, filename)) # Temporary dataframe to hold loaded csv file
             print(filename)
 
+            case_date = datetime.strptime(filename.split('.')[0], '%m-%d-%Y')
+            case_date_string = datetime.strftime(case_date, '%Y-%m-%d')
+
             # if using AWS
             df_temp = pd.read_aws_csv(os.path.join(case_data_path, filename))
 
             #### additional processing (See US 2021-06-01 problem in ReadMe) #####
-            df_temp = misc_processing(df_temp, filename)
+            # df_temp = misc_processing(df_temp, filename)
             
             
             
@@ -180,7 +183,9 @@ def process_case_data(file_date=None, process_all=False, reload_country=None):
             csv_list.append(tuple([filename, 'case', today]))
             
             ##### case data processing #####
-            df_temp['date_string'] = df_temp['Last_Update'].apply(to_date_string)
+            df_temp['date_case'] = case_date
+            df_temp['date_string'] = case_date_string
+            # df_temp['date_string'] = df_temp['Last_Update'].apply(to_date_string)
             df_temp['timestamp'] = df_temp['Last_Update'].apply(to_timestamp)
             # df_temp['Confirmed'] = df_temp['Confirmed'].fillna(0.0).astype(int)
             # df_temp['Confirmed'] = df_temp['Confirmed'].fillna(np.nan).replace([np.nan], [None])
@@ -196,8 +201,8 @@ def process_case_data(file_date=None, process_all=False, reload_country=None):
     ##### time processing #####
     if not df_all.empty:
         t = df_all['timestamp']
-        time_data = (t.dt.strftime('%Y-%m-%d %H:%M:%S'), t.dt.strftime('%Y-%m-%d'), t.dt.hour.values, t.dt.day.values, t.dt.weekofyear.values, t.dt.month.values, t.dt.year.values, t.dt.weekday.values)
-        time_col = ('Last_Update', 'date_string', 'hour', 'day', 'week', 'month', 'year', 'weekday')
+        time_data = (t.dt.strftime('%Y-%m-%d %H:%M:%S'), t.dt.hour.values, t.dt.day.values, t.dt.weekofyear.values, t.dt.month.values, t.dt.year.values, t.dt.weekday.values)
+        time_col = ('Last_Update', 'hour', 'day', 'week', 'month', 'year', 'weekday')
         df_time = pd.DataFrame(dict(zip(time_col, time_data)))
 
 
@@ -217,13 +222,18 @@ def process_case_data(file_date=None, process_all=False, reload_country=None):
             # df_temp = pd.read_csv(os.path.join(case_old_data_path, filename)) # Temporary dataframe to hold loaded csv file
             print(filename)
 
+            case_date = datetime.strptime(filename.split('.')[0], '%m-%d-%Y')
+            case_date_string = datetime.strftime(case_date, '%Y-%m-%d')
+
             # if using AWS
             df_temp = pd.read_aws_csv(os.path.join(case_old_data_path, filename))
 
             csv_list.append(tuple([filename, 'case', today]))
             
             ##### case data processing #####
-            df_temp['date_string'] = df_temp['Last_Update'].apply(to_date_string)
+            df_temp['date_case'] = case_date
+            df_temp['date_string'] = case_date_string
+            # df_temp['date_string'] = df_temp['Last_Update'].apply(to_date_string)
             df_temp['timestamp'] = df_temp['Last_Update'].apply(to_timestamp)
             # df_temp['Confirmed'] = df_temp['Confirmed'].fillna(0.0).astype(int)
             # df_temp['Confirmed'] = df_temp['Confirmed'].fillna(np.nan).replace([np.nan], [None]) 
@@ -242,8 +252,8 @@ def process_case_data(file_date=None, process_all=False, reload_country=None):
     df_time_old = pd.DataFrame()
     if not df_all_old.empty:
         t = df_all_old['timestamp']
-        time_data = (t.dt.strftime('%Y-%m-%d %H:%M:%S'), t.dt.strftime('%Y-%m-%d'), t.dt.hour.values, t.dt.day.values, t.dt.weekofyear.values, t.dt.month.values, t.dt.year.values, t.dt.weekday.values)
-        time_col = ('Last_Update', 'date_string', 'hour', 'day', 'week', 'month', 'year', 'weekday')
+        time_data = (t.dt.strftime('%Y-%m-%d %H:%M:%S'), t.dt.hour.values, t.dt.day.values, t.dt.weekofyear.values, t.dt.month.values, t.dt.year.values, t.dt.weekday.values)
+        time_col = ('Last_Update', 'hour', 'day', 'week', 'month', 'year', 'weekday')
         df_time_old = pd.DataFrame(dict(zip(time_col, time_data)))
         
         df_all_old = df_all_old[col_to_include]
@@ -262,7 +272,7 @@ def process_case_data(file_date=None, process_all=False, reload_country=None):
 
     ##### Insert into daily_case table #####
     if not df_all_combined.empty:
-        col_case_dup = ['FIPS', 'Admin2', 'Province_State', 'Country_Region', 'Last_Update']
+        col_case_dup = ['FIPS', 'Admin2', 'Province_State', 'Country_Region', 'date_string']
         
         for col in df_all_combined.columns.to_list():
             # standardise na into None so that in insertion they would be Null
@@ -322,7 +332,7 @@ def process_case_data(file_date=None, process_all=False, reload_country=None):
             query  = """
             INSERT INTO daily_case ({})
             VALUES {}
-            ON CONFLICT (FIPS, Admin2, Province_State, Country_Region, Last_Update)
+            ON CONFLICT (FIPS, Admin2, Province_State, Country_Region, date_string)
             DO UPDATE SET
                 Confirmed = EXCLUDED.Confirmed,
                 Deaths = EXCLUDED.Deaths,
