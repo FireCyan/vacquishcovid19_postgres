@@ -200,7 +200,7 @@ def process_case_data(file_date=None, process_all=False, reload_country=None):
 
     ##### time processing #####
     if not df_all.empty:
-        t = df_all['timestamp']
+        t = df_all['timestamp'].dropna()
         time_data = (t.dt.strftime('%Y-%m-%d %H:%M:%S'), t.dt.hour.values, t.dt.day.values, t.dt.weekofyear.values, t.dt.month.values, t.dt.year.values, t.dt.weekday.values)
         time_col = ('Last_Update', 'hour', 'day', 'week', 'month', 'year', 'weekday')
         df_time = pd.DataFrame(dict(zip(time_col, time_data)))
@@ -251,7 +251,7 @@ def process_case_data(file_date=None, process_all=False, reload_country=None):
     ##### time processing #####
     df_time_old = pd.DataFrame()
     if not df_all_old.empty:
-        t = df_all_old['timestamp']
+        t = df_all_old['timestamp'].dropna()
         time_data = (t.dt.strftime('%Y-%m-%d %H:%M:%S'), t.dt.hour.values, t.dt.day.values, t.dt.weekofyear.values, t.dt.month.values, t.dt.year.values, t.dt.weekday.values)
         time_col = ('Last_Update', 'hour', 'day', 'week', 'month', 'year', 'weekday')
         df_time_old = pd.DataFrame(dict(zip(time_col, time_data)))
@@ -397,7 +397,7 @@ def process_case_data(file_date=None, process_all=False, reload_country=None):
             DO NOTHING
             """.format(time_cols, ",".join(time_values))
             
-            # print(time_query)
+            print(time_query)
             
             try:
                 cur.execute(time_query, time_tuples)
