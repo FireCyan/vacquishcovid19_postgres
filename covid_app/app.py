@@ -52,6 +52,16 @@ register_callbacks(app)
 
 app.config.suppress_callback_exceptions = True
 
+app.scripts.config.serve_locally = False
+app.scripts.append_script({
+"external_url": "https://www.googletagmanager.com/gtag/js?id=G-XS013W81ZD"
+})
+
+app.scripts.append_script({
+'external_url': 'http://www.vacquishcovid19.com/assets/gtag.js'
+})
+
+
 if __name__ == '__main__':
     if os.environ.get("USERNAME") == 'john':
         # app.run_server(host="127.0.0.1", debug=False, port=int(os.environ['CDSW_APP_PORT']))
