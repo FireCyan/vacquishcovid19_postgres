@@ -12,7 +12,7 @@ Functions that query and process df for plotting
 import os, sys, re 
 from pathlib import Path
 
-# current_wd = Path(r'C:\John_folder\Current_focus\0_host_covid_19_plots_project\covid-19_vaccination_postgres')
+# current_wd = Path(r'C:\John_folder\github_projects\vacquishcovid19_postgres')
 
 # https://stackoverflow.com/questions/595305/how-do-i-get-the-path-of-the-python-script-i-am-running-in
 current_file_path = Path(os.path.realpath(__file__))
@@ -57,7 +57,7 @@ conn, cur = aws_util.conn_db(dbname)
 def combine_case_vac_lookup():
     ##### Case df #####
     case_sql = """
-        SELECT date_string, Country_Region, sum(Confirmed) as country_confirmed
+        SELECT date_string, Country_Region, sum(Confirmed) as country_confirmed, sum(deaths) as country_death
         FROM daily_case
         GROUP BY date_String, Country_Region
     """
@@ -98,14 +98,20 @@ def get_adjusted_people_vaccinated(df):
     df_case_vac['date'] = df_case_vac['date_string'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
     df_case_vac = df_case_vac.sort_values('date')
 
+
+    #####################################################
+    # Past week daily average confirmed cases and death
+    #####################################################
+
     # Get daily cases by using diff function
-    df_case_vac['daily_country_confirmed'] = df_case_vac.groupby('country_region')['country_confirmed'].diff()
-    df_case_vac['daily_country_confirmed'] = df_case_vac['daily_country_confirmed'].fillna(0)
+    df_case_vac[['daily_country_confirmed', 'daily_country_death']] = df_case_vac.groupby('country_region')[['country_confirmed', 'country_death']].diff()
+    # df_case_vac['daily_country_confirmed'] = df_case_vac['daily_country_confirmed'].fillna(0)
 
+
+    ##### Handle negative values and get rolling average for confirmed cases #####
     # To deal with the issue where France case was retrospectively updated on 2021-05-26
-    mat_neg = (df_case_vac['daily_country_confirmed'] < 0)
-    df_case_vac.loc[mat_neg, 'daily_country_confirmed'] = np.nan
-
+    mat_case_neg = (df_case_vac['daily_country_confirmed'] < 0)
+    df_case_vac.loc[mat_case_neg, 'daily_country_confirmed'] = np.nan
 
     # Get past week daily average cases
     # df_case_vac['past_week_daily_cases'] = (df_case_vac.groupby('country_region')['daily_country_confirmed'].
@@ -115,7 +121,16 @@ def get_adjusted_people_vaccinated(df):
     rolling(window=7, min_periods=1).mean().reset_index(0,drop=True))
 
 
+    ##### Handle negative values and get rolling average for death #####
+    mat_death_neg = (df_case_vac['daily_country_death'] < 0)
+    df_case_vac.loc[mat_death_neg, 'daily_country_death'] = np.nan
+
+    df_case_vac['past_week_daily_death'] = (df_case_vac.groupby('country_region')['daily_country_death'].
+    rolling(window=7, min_periods=1).mean().reset_index(0,drop=True))
+
+
     ###########################################################################################################################################
+    # Vaccination part
     # Calculated adjusted_people_vaccinated and determine which countries/regions have total_vaccinations and people_vaccinated
     # Explanation:
     # Most vaccination needs 2 dosages, so total_vaccinations != people_vaccinated != people_fully_vaccinated
@@ -185,6 +200,7 @@ def get_adjusted_people_vaccinated(df):
     ##### Calculate daily cases per 100k and percentage of adjusted people vaccinated #####
     # df_curr_case_vac
     df_case_vac['past_week_daily_cases_per_100k'] = (df_case_vac['past_week_daily_cases']/df_case_vac['population']*100000)
+    
 
     df_case_vac['percent_adjusted_people_vaccinated'] = (df_case_vac['adjusted_people_vaccinated']/df_case_vac['population']*100)
 
