@@ -43,8 +43,8 @@ def plot_latest_case_vac(df, x_col='percent_adjusted_people_vaccinated', y_col='
         mat_continents = df['continent'].isin(continents)
         df = df[mat_continents]
 
-    if y_col == 'past_week_daily_cases_per_100k':
-        past_week_string = 'Past week daily average case per 100k'
+    if y_col == 'past_week_daily_cases_per_100K':
+        past_week_string = 'Past week daily average case per 100K'
         # y_decimal = 2
     else:
         past_week_string = 'Past week daily average'
@@ -101,7 +101,7 @@ def plot_latest_case_vac(df, x_col='percent_adjusted_people_vaccinated', y_col='
     title_string = "Latest status plot: "
     if y_col == 'past_week_daily_cases':
         title_string = title_string + 'Past week daily cases'
-    elif y_col == 'past_week_daily_cases_per_100k':
+    elif y_col == 'past_week_daily_cases_per_100K':
         title_string = title_string + 'Past week daily cases per 100K'
 
     if x_col == 'percent_adjusted_people_vaccinated':
@@ -133,7 +133,7 @@ def plot_latest_case_vac(df, x_col='percent_adjusted_people_vaccinated', y_col='
 
 
     fig_case_vac.update_yaxes(showline=True, linewidth=1, linecolor='black', ticks="inside", type=ylog)
-    if y_col == 'past_week_daily_cases_per_100k':
+    if y_col == 'past_week_daily_cases_per_100K':
         y_label = 'Past week daily average cases (per 100K'
     else:
         y_label = 'Past week daily average cases (number of people'
@@ -153,6 +153,7 @@ def plot_latest_case_vac(df, x_col='percent_adjusted_people_vaccinated', y_col='
 def plot_case_vac_ts(df, country, x_col='percent_adjusted_people_vaccinated', y_col='past_week_daily_cases', xlog='linear', ylog='linear'):
     # https://plotly.com/python/hover-text-and-formatting/#advanced-hover-template
     # https://community.plotly.com/t/hover-data-on-go-scatter-and-or-shared-legends-with-plotly-express/34239
+    # https://plotly.com/python/hover-text-and-formatting/#adding-other-data-to-the-hover-with-customdata-and-a-hovertemplate
     fig_case_vac_ts = go.Figure()
 
     # list_country = ['United Kingdom', 'Israel', 'US', 'Australia', 'China']
@@ -163,11 +164,19 @@ def plot_case_vac_ts(df, country, x_col='percent_adjusted_people_vaccinated', y_
         list_country = [country]
 
 
-    if y_col == 'past_week_daily_cases_per_100k':
-        past_week_string = 'Past week daily average case per 100k'
+    # if y_col == 'past_week_daily_cases_per_100K':
+    if 'per' in y_col:
+        past_week_case_string = 'Past week daily average cases per 100K'
+
+        past_week_death_string = 'Past week daily average death per 1M'
+        case_col = 'past_week_daily_cases_per_100K'
+        death_col = 'past_week_daily_death_per_1M'
         # y_decimal = 2
     else:
-        past_week_string = 'Past week daily average'
+        past_week_case_string = 'Past week daily average cases'
+        past_week_death_string = 'Past week daily average death'
+        case_col = 'past_week_daily_cases'
+        death_col = 'past_week_daily_death'
         # y_decimal = 0
 
     if x_col == 'percent_adjusted_people_vaccinated':
@@ -185,12 +194,14 @@ def plot_case_vac_ts(df, country, x_col='percent_adjusted_people_vaccinated', y_
                                         mode='lines+markers',
                                         hoveron='points',
                                         text=df_ts['date_string'],
-                                        customdata=df_ts['country_region'],
+                                        customdata=df_ts[['country_region', case_col, death_col, 'past_week_daily_case_fatality_ratio']],
                                         hovertemplate= 
-                                        "Country/region: %{customdata}<br>" + 
+                                        "Country/region: %{customdata[0]}<br>" + 
                                         "Date: %{text}<br>" +
-                                        past_week_string + ": %{y: .2f}<br>" +
-                                        adj_vac_string + ": %{x: .2f}" + percent_symbol + "<br>" +
+                                        past_week_case_string + ": %{customdata[1]:.2f}<br>" +
+                                        past_week_death_string + ": %{customdata[2]:.2f}<br>" +
+                                        "Past week daily case fatality ratio: %{customdata[3]:.2f}" + percent_symbol + "<br>" +
+                                        adj_vac_string + ": %{x:.2f}" + percent_symbol + "<br>" +
                                         "<extra></extra>",
                                         name=country)
                             )
@@ -209,15 +220,47 @@ def plot_case_vac_ts(df, country, x_col='percent_adjusted_people_vaccinated', y_
 
     title_string = "All available vaccination plot: "
     
+
+    ####################
+    # Title and y-label
+    ####################
     if y_col == 'past_week_daily_cases':
         title_string = title_string + 'Past week daily cases'
-    elif y_col == 'past_week_daily_cases_per_100k':
+
+        y_label = 'Past week daily average cases (number of people'
+    elif y_col == 'past_week_daily_cases_per_100K':
         title_string = title_string + 'Past week daily cases per 100K population'
 
+        y_label = 'Past week daily average cases (per 100K'
+
+    ##### title, y_label for death plot #####
+    elif y_col == 'past_week_daily_death':
+        title_string = title_string + 'Past week daily death'
+
+        y_label = 'Past week daily average death (number of people'
+
+    elif y_col == 'past_week_daily_death_per_1M':
+        title_string = title_string + 'Past week daily death per 1M population'
+
+        y_label = 'Past week daily average death (per 1M'
+
+    elif y_col == 'past_week_daily_case_fatality_ratio':
+        title_string = title_string + 'Past week daily case fatality ratio'
+
+        y_label = 'Past week daily case fatality ratio (%'
+
+
+
+    ####################
+    # Title and x-label
+    ####################
     if x_col == 'percent_adjusted_people_vaccinated':
         title_string = title_string + ' and vaccination rate (all available data)'
+        x_label = 'Adjusted people vaccinated (%'
+
     else:
         title_string = title_string + ' and number of vaccination (all available data)'
+        x_label = 'Adjusted people vaccinated (Number of people'
     
     fig_case_vac_ts.update_layout(
         title={
@@ -227,10 +270,10 @@ def plot_case_vac_ts(df, country, x_col='percent_adjusted_people_vaccinated', y_
     # Turn on x-axis and y-axis lines
     fig_case_vac_ts.update_xaxes(showline=True, linewidth=1, linecolor='black', ticks="inside", type=xlog)
     # Title
-    if x_col == 'percent_adjusted_people_vaccinated':
-        x_label = 'Adjusted people vaccinated (%'
-    else:
-        x_label = 'Adjusted people vaccinated (Number of people'
+    # if x_col == 'percent_adjusted_people_vaccinated':
+    #     x_label = 'Adjusted people vaccinated (%'
+    # else:
+    #     x_label = 'Adjusted people vaccinated (Number of people'
 
     if xlog == 'log':
         x_label = x_label + '; log scale)'
@@ -243,10 +286,10 @@ def plot_case_vac_ts(df, country, x_col='percent_adjusted_people_vaccinated', y_
 
 
     fig_case_vac_ts.update_yaxes(showline=True, linewidth=1, linecolor='black', ticks="inside", type=ylog)
-    if y_col == 'past_week_daily_cases_per_100k':
-        y_label = 'Past week daily average cases (per 100K'
-    else:
-        y_label = 'Past week daily average cases (number of people'
+    # if y_col == 'past_week_daily_cases_per_100K':
+    #     y_label = 'Past week daily average cases (per 100K'
+    # else:
+    #     y_label = 'Past week daily average cases (number of people'
     
     if ylog == 'log':
         y_label = y_label + '; log scale)'
@@ -258,3 +301,11 @@ def plot_case_vac_ts(df, country, x_col='percent_adjusted_people_vaccinated', y_
     # fig_case_vac_ts.show()
     
     return fig_case_vac_ts 
+
+
+# Need to have the following in order to show figure in a browser when using Spyder
+# import plotly.io as pio
+# import plotly.express as px
+# pio.renderers.default='browser'
+
+# fig.show()

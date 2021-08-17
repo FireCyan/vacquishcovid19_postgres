@@ -197,11 +197,11 @@ def get_adjusted_people_vaccinated(df):
     df_case_vac = pd.concat([df_case_vac_ppl_vac, df_case_vac_total_vac])
 
 
-    ##### Calculate daily cases per 100k and percentage of adjusted people vaccinated #####
+    ##### Calculate daily cases per 100K and percentage of adjusted people vaccinated #####
     # df_curr_case_vac
-    df_case_vac['past_week_daily_cases_per_100k'] = (df_case_vac['past_week_daily_cases']/df_case_vac['population']*100000)
+    df_case_vac['past_week_daily_cases_per_100K'] = (df_case_vac['past_week_daily_cases']/df_case_vac['population']*100000)
 
-    df_case_vac['past_week_daily_death_per_100k'] = (df_case_vac['past_week_daily_death']/df_case_vac['population']*100000)
+    df_case_vac['past_week_daily_death_per_1M'] = (df_case_vac['past_week_daily_death']/df_case_vac['population']*1000000)
 
     # Mortality calculation
     # https://www.who.int/news-room/commentaries/detail/estimating-mortality-from-covid-19
