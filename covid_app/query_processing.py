@@ -200,7 +200,15 @@ def get_adjusted_people_vaccinated(df):
     ##### Calculate daily cases per 100k and percentage of adjusted people vaccinated #####
     # df_curr_case_vac
     df_case_vac['past_week_daily_cases_per_100k'] = (df_case_vac['past_week_daily_cases']/df_case_vac['population']*100000)
-    
+
+    df_case_vac['past_week_daily_death_per_100k'] = (df_case_vac['past_week_daily_death']/df_case_vac['population']*100000)
+
+    # Mortality calculation
+    # https://www.who.int/news-room/commentaries/detail/estimating-mortality-from-covid-19
+    # Infection fatality ratio (IFR = the proportion of deaths among all infected individuals)
+    # Case fatality ratio (CFR = the proportion of deaths among identified confirmed cases)
+    # Here there is only confirmed cases, so calculate CFR
+    df_case_vac['past_week_daily_case_fatality_ratio'] = (df_case_vac['past_week_daily_death']/df_case_vac['past_week_daily_cases']*100)
 
     df_case_vac['percent_adjusted_people_vaccinated'] = (df_case_vac['adjusted_people_vaccinated']/df_case_vac['population']*100)
 
