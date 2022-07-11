@@ -30,7 +30,7 @@ import plotly.graph_objects as go
 ###############################################################################
 
 
-def plot_latest_case_vac(df, x_col='percent_adjusted_people_vaccinated', y_col='past_week_daily_cases', countries='all', continents='all', xlog='linear', ylog='linear'):
+def plot_latest_case_vac(df, x_col='percent_total_vac_over_population', y_col='past_week_daily_cases', countries='all', continents='all', xlog='linear', ylog='linear'):
     # https://plotly.com/python/hover-text-and-formatting/#advanced-hover-template
     # https://community.plotly.com/t/hover-data-on-go-scatter-and-or-shared-legends-with-plotly-express/34239
     fig_case_vac = go.Figure()
@@ -50,11 +50,11 @@ def plot_latest_case_vac(df, x_col='percent_adjusted_people_vaccinated', y_col='
         past_week_string = 'Past week daily average'
         # y_decimal = 0
 
-    if x_col == 'percent_adjusted_people_vaccinated':
-        adj_vac_string = 'Percent adjusted people vaccinated'
+    if x_col == 'percent_total_vac_over_population':
+        adj_vac_string = 'Percent total vaccination over population'
         percent_symbol = '%'
     else:
-        adj_vac_string = 'Number of adjusted people vaccinated'
+        adj_vac_string = 'Number of total vaccination'
         percent_symbol = ''
 
     for continent_name, continent in df.groupby('continent'):
@@ -104,7 +104,7 @@ def plot_latest_case_vac(df, x_col='percent_adjusted_people_vaccinated', y_col='
     elif y_col == 'past_week_daily_cases_per_100k':
         title_string = title_string + 'Past week daily cases per 100K'
 
-    if x_col == 'percent_adjusted_people_vaccinated':
+    if x_col == 'percent_total_vac_over_population':
         title_string = title_string + ' and vaccination rate (lastest data only)'
     else:
         title_string = title_string + ' and number of vaccination (lastest data only)'
@@ -117,10 +117,10 @@ def plot_latest_case_vac(df, x_col='percent_adjusted_people_vaccinated', y_col='
     # Turn on x-axis and y-axis lines
     fig_case_vac.update_xaxes(showline=True, linewidth=1, linecolor='black', ticks="inside", type=xlog)
     # Title
-    if x_col == 'percent_adjusted_people_vaccinated':
-        x_label = 'Adjusted people vaccinated (%'
+    if x_col == 'percent_total_vac_over_population':
+        x_label = 'Total vaccinated rate (%'
     else:
-        x_label = 'Adjusted people vaccinated (Number of people'
+        x_label = 'Total vaccinated (Number of people'
 
     if xlog == 'log':
         x_label = x_label + '; log scale)'
@@ -150,7 +150,7 @@ def plot_latest_case_vac(df, x_col='percent_adjusted_people_vaccinated', y_col='
     return fig_case_vac
 
 
-def plot_case_vac_ts(df, country, x_col='percent_adjusted_people_vaccinated', y_col='past_week_daily_cases', xlog='linear', ylog='linear'):
+def plot_case_vac_ts(df, country, x_col='percent_total_vac_over_population', y_col='past_week_daily_cases', xlog='linear', ylog='linear'):
     # https://plotly.com/python/hover-text-and-formatting/#advanced-hover-template
     # https://community.plotly.com/t/hover-data-on-go-scatter-and-or-shared-legends-with-plotly-express/34239
     fig_case_vac_ts = go.Figure()
@@ -170,11 +170,11 @@ def plot_case_vac_ts(df, country, x_col='percent_adjusted_people_vaccinated', y_
         past_week_string = 'Past week daily average'
         # y_decimal = 0
 
-    if x_col == 'percent_adjusted_people_vaccinated':
-        adj_vac_string = 'Percent adjusted people vaccinated'
+    if x_col == 'percent_total_vac_over_population':
+        adj_vac_string = 'Total vaccinated over population'
         percent_symbol = '%'
     else:
-        adj_vac_string = 'Number of adjusted people vaccinated'
+        adj_vac_string = 'Number of total vaccination'
         percent_symbol = ''
 
     for country in list_country:
@@ -214,7 +214,7 @@ def plot_case_vac_ts(df, country, x_col='percent_adjusted_people_vaccinated', y_
     elif y_col == 'past_week_daily_cases_per_100k':
         title_string = title_string + 'Past week daily cases per 100K population'
 
-    if x_col == 'percent_adjusted_people_vaccinated':
+    if x_col == 'percent_total_vac_over_population':
         title_string = title_string + ' and vaccination rate (all available data)'
     else:
         title_string = title_string + ' and number of vaccination (all available data)'
@@ -227,10 +227,10 @@ def plot_case_vac_ts(df, country, x_col='percent_adjusted_people_vaccinated', y_
     # Turn on x-axis and y-axis lines
     fig_case_vac_ts.update_xaxes(showline=True, linewidth=1, linecolor='black', ticks="inside", type=xlog)
     # Title
-    if x_col == 'percent_adjusted_people_vaccinated':
-        x_label = 'Adjusted people vaccinated (%'
+    if x_col == 'percent_total_vac_over_population':
+        x_label = 'Total vaccinated rate (%'
     else:
-        x_label = 'Adjusted people vaccinated (Number of people'
+        x_label = 'Total vaccinated (Number of people'
 
     if xlog == 'log':
         x_label = x_label + '; log scale)'

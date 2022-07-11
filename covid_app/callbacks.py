@@ -88,9 +88,11 @@ def register_callbacks(app):
         
         # x value to use and x-axis scale
         if x_type == 'Percentage':
-            x_col = 'percent_adjusted_people_vaccinated'
+            # x_col = 'percent_adjusted_people_vaccinated'
+            x_col = 'percent_total_vac_over_population'
         else:
-            x_col = 'adjusted_people_vaccinated'
+            # x_col = 'adjusted_people_vaccinated'
+            x_col = 'total_vaccinations'
         
         xlog = 'log' if x_scale == 'Log scale' else 'linear'
 
@@ -124,9 +126,11 @@ def register_callbacks(app):
 
         # x value to use and x-axis scale
         if x_type == 'Percentage':
-            x_col = 'percent_adjusted_people_vaccinated'
+            # x_col = 'percent_adjusted_people_vaccinated'
+            x_col = 'percent_total_vac_over_population'
         else:
-            x_col = 'adjusted_people_vaccinated'
+            # x_col = 'adjusted_people_vaccinated'
+            x_col = 'total_vaccinations'
         
         xlog = 'log' if x_scale == 'Log scale' else 'linear'
 
