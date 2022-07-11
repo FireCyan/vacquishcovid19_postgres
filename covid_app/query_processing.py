@@ -188,6 +188,8 @@ def get_adjusted_people_vaccinated(df):
 
     df_case_vac['percent_adjusted_people_vaccinated'] = (df_case_vac['adjusted_people_vaccinated']/df_case_vac['population']*100)
 
+    df_case_vac['percent_total_vac_over_population'] = (df_case_vac['total_vaccinations']/df_case_vac['population']*100)
+    
     # Get the max date row with groupby 
     df_curr_case_vac = (df_case_vac[df_case_vac.groupby('country_region')['date'].transform('max') == df_case_vac['date']])
 
