@@ -46,7 +46,7 @@ if os.environ.get("USERNAME") == 'john':
 else:
     
     username="cyan8388"
-    REGION="ap-southeast-2"
+    REGION="ap-southeast-2c"
 
     #gets the credentials from .aws/credentials
     session = boto3.Session(profile_name=username)
