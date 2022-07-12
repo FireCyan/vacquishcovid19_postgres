@@ -65,7 +65,8 @@ def conn_default():
         host=host,
         user=username,
         password=password,
-        port=port)
+        port=port,
+        sslrootcert="SSLCERTIFICATE")
     conn.set_session(autocommit=True)
     cur = conn.cursor()
 
