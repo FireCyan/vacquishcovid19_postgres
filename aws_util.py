@@ -49,7 +49,7 @@ else:
     REGION="ap-southeast-2"
 
     #gets the credentials from .aws/credentials
-    session = boto3.Session()
+    session = boto3.Session(profile_name=username)
     client = session.client('rds')
 
     password = client.generate_db_auth_token(DBHostname=host, Port=port, DBUsername=username, Region=REGION) 
