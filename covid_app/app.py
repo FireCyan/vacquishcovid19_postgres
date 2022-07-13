@@ -43,9 +43,9 @@ try:
         # , external_stylesheets =[dbc.themes.BOOTSTRAP]
     else:        
         print('Not shell')
-        app = dash.Dash(__name__, external_stylesheets =[dbc.themes.BOOTSTRAP], url_base_pathname='/')
+        app = dash.Dash(__name__, external_stylesheets =[dbc.themes.BOOTSTRAP], url_base_pathname='/dash/')
 except NameError:
-    app = dash.Dash(__name__, external_stylesheets =[dbc.themes.BOOTSTRAP])
+    app = dash.Dash(__name__, external_stylesheets =[dbc.themes.BOOTSTRAP], url_base_pathname='/dash/')
         
 app.layout = layout
 # app.layout = html.Div([layout])
