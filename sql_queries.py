@@ -24,10 +24,10 @@ CREATE TABLE IF NOT EXISTS daily_case (
     date_case date,
     date_string text,
     Last_Update text,
-    Confirmed int,
-    Deaths int,
-    Recovered int,
-    Active int
+    Confirmed bigint,
+    Deaths bigint,
+    Recovered bigint,
+    Active bigint
 )
 """)
 
@@ -37,9 +37,9 @@ CREATE TABLE IF NOT EXISTS vac (
     date_string text,
     date_org text,
     vaccine text,
-    total_vaccinations int,
-    people_vaccinated int,
-    people_fully_vaccinated int
+    total_vaccinations bigint,
+    people_vaccinated bigint,
+    people_fully_vaccinated bigint
 )
 """)
 
