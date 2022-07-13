@@ -62,6 +62,7 @@ else:
 def conn_default():
     # conn = psycopg2.connect("host=127.0.0.1 dbname=covid19_db user=postgres password=localtest")
     conn = psycopg2.connect(
+        dbname='postgres',
         host=host,
         user=username,
         password=password,
