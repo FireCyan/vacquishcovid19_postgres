@@ -73,4 +73,4 @@ if __name__ == '__main__':
         # 'external_url': 'http://www.vacquishcovid19.com/assets/gtag.js'
         # })
         
-        app.run_server(port='8052', host="0.0.0.0", debug=False)
+        app.run_server(debug=False)
