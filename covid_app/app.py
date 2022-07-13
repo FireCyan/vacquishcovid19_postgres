@@ -44,7 +44,7 @@ try:
     else:
         app = dash.Dash(__name__, external_stylesheets =[dbc.themes.BOOTSTRAP])
 except NameError:
-    app = dash.Dash(__name__, external_stylesheets =[dbc.themes.BOOTSTRAP])
+    app = dash.Dash(__name__, external_stylesheets =[dbc.themes.BOOTSTRAP], url_base_pathname='/')
         
 app.layout = layout
 # app.layout = html.Div([layout])
