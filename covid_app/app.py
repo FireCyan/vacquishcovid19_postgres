@@ -41,11 +41,11 @@ try:
     elif shell == 'TerminalInteractiveShell':
         app = dash.Dash(__name__)
         # , external_stylesheets =[dbc.themes.BOOTSTRAP]
-    else:
-        app = dash.Dash(__name__, external_stylesheets =[dbc.themes.BOOTSTRAP])
+    else:        
+        print('Not shell')
+        app = dash.Dash(__name__, external_stylesheets =[dbc.themes.BOOTSTRAP], url_base_pathname='/')
 except NameError:
-    print('Not shell')
-    app = dash.Dash(__name__, external_stylesheets =[dbc.themes.BOOTSTRAP], url_base_pathname='/')
+    app = dash.Dash(__name__, external_stylesheets =[dbc.themes.BOOTSTRAP])
         
 app.layout = layout
 # app.layout = html.Div([layout])
