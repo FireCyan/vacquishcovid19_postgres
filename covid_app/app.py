@@ -17,8 +17,8 @@ import dash
 import dash_bootstrap_components as dbc
 import dash_html_components as html
 
-# if 'CDSW_DOMAIN' not in os.environ:
-from jupyter_dash import JupyterDash
+if os.environ.get("USERNAME") == 'john':
+    from jupyter_dash import JupyterDash
 
 # from covid_app.layout_main import layout
 from layout_main import layout
