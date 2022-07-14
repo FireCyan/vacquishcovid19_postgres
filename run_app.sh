@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Change directory to the app folder
-cd ~/covid19-project/covid_app
+cd ~/vacquishcovid19_postgres/covid_app
 
 # Kill the dash app
 killall screen

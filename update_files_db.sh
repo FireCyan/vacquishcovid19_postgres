@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Change directory to JohnHopkins github repo
-cd ~/covid19-project
+cd ~/vacquishcovid19_postgres
 
 # Run daily_update_script.py
 python3 daily_update_script.py
@@ -12,7 +12,7 @@ sleep 10
 killall screen
 
 # Change directory to the app folder
-cd ~/covid19-project/covid_app
+cd ~/vacquishcovid19_postgres/covid_app
 
 # Restart the dash app
 screen -d -m python3 app.py
