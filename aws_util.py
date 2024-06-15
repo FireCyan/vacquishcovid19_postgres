@@ -33,12 +33,13 @@ host = "covid19.cluster-cuwrjlvxl5qu.ap-southeast-2.rds.amazonaws.com"
 username = "postgres"
 port="5432"
 
-if any(local_comp_user in os.environ.get("USERNAME") for local_comp_user in ['john', 'cyan8']):
+# if any(local_comp_user in os.environ.get("USERNAME") for local_comp_user in ['john', 'cyan8']):
+if os.environ.get("USERNAME") is not None:
     cred = configparser.ConfigParser()
     cred.read(parent_dir/'config'/'credential.cfg')
     ACCESS_KEY = cred['AWS_USER']['ACCESS_KEY']
     SECRET_KEY = cred['AWS_USER']['SECRET_KEY']
-    
+
     password = cred['RDS']['PASSWORD']
     port = "5432"
 
