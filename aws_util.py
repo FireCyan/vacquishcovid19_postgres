@@ -19,6 +19,7 @@ from pathlib import Path
 # parent_dir = Path(r'C:\John_folder\Current_focus\0_host_covid_19_plots_project\covid-19_vaccination_postgres')
 
 parent_dir = Path(os.path.realpath(__file__)).parent.absolute()
+print(parent_dir)
 
 # print(parent_dir)
 
@@ -27,17 +28,16 @@ from botocore.exceptions import NoCredentialsError
 
 # local_comp = False
 
-host = "covid19.cuwrjlvxl5qu.ap-southeast-2.rds.amazonaws.com"
+host = "covid19.cluster-cuwrjlvxl5qu.ap-southeast-2.rds.amazonaws.com"
+# Before 20240615 update, was "covid19.cuwrjlvxl5qu.ap-southeast-2.rds.amazonaws.com"
 username = "postgres"
 port="5432"
 
-if os.environ.get("USERNAME") == 'john':
+if any(local_comp_user in os.environ.get("USERNAME") for local_comp_user in ['john', 'cyan8']):
     cred = configparser.ConfigParser()
     cred.read(parent_dir/'config'/'credential.cfg')
     ACCESS_KEY = cred['AWS_USER']['ACCESS_KEY']
     SECRET_KEY = cred['AWS_USER']['SECRET_KEY']
-
-
     
     password = cred['RDS']['PASSWORD']
     port = "5432"
