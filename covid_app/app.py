@@ -64,13 +64,13 @@ if __name__ == '__main__':
         # app.run_server(debug=True)
     else:
         ##### Only do Google Analytics if hosted online #####
-        app.scripts.config.serve_locally = False
-        app.scripts.append_script({
-        "external_url": "https://www.googletagmanager.com/gtag/js?id=G-XS013W81ZD"
-        })
+        # app.scripts.config.serve_locally = False
+        # app.scripts.append_script({
+        # "external_url": "https://www.googletagmanager.com/gtag/js?id=G-XS013W81ZD"
+        # })
 
-        app.scripts.append_script({
-        'external_url': 'http://www.vacquishcovid19.com/assets/gtag.js'
-        })
+        # app.scripts.append_script({
+        # 'external_url': 'http://www.vacquishcovid19.com/assets/gtag.js'
+        # })
         
         app.run_server(port='8052', debug=False)
