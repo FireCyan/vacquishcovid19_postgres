@@ -14,7 +14,7 @@ import os
 config = configparser.ConfigParser()
 config.read('dl.cfg')
 
-import aws_util
+from src import aws_util
 
 
 def dl_case_files(file_date=None):

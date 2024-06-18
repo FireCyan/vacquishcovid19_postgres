@@ -18,14 +18,14 @@ for module in modules:
         if re.search('__pycache__', str(fld)) is None and re.search('\.git', str(fld)) is None and str(fld) not in sys.path: 
             sys.path.append(str(fld))
 
-import aws_util
+from src import aws_util
 
 
 
 ##############################
 # Download files from sources
 ##############################
-import download_file
+from src import download_file
 
 print('--------- Start downloading updated data -------------')
 
@@ -49,7 +49,7 @@ print('--------- Finish downloading updated data -------------')
 #########################
 # Create DB and tables
 #########################
-import create_table
+from src import create_table
 
 # Only run create_table.main() for the first time building the DB
 # create_table.main()
@@ -58,8 +58,7 @@ import create_table
 # Perform ETL
 ###############
 
-import etl
-
+from src import etl
 
 #### daily case processing #####
 query, tuples = etl.process_case_data(process_all=False)
@@ -84,13 +83,13 @@ etl.process_country_location()
 ###################################
 # Data analysis and visualisation
 ###################################
-import query_processing as qp
+from src import query_processing as qp
 from plotly.offline import plot
 
 df_case_loc_vac = qp.combine_case_vac_lookup()
 df_case_vac, df_curr_case_vac = qp.get_adjusted_people_vaccinated(df_case_loc_vac)
 
-import covid_plot as cp
+from covid_app import covid_plot as cp
 
 fig = cp.plot_latest_case_vac(df_curr_case_vac, y_col='past_week_daily_cases_per_100k')
 

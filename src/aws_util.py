@@ -5,6 +5,9 @@ AWS functions such as
 
 Author: john.yang 2021-04-17
 '''
+import git
+repo = git.Repo('.', search_parent_directories=True)
+repo_loc = repo.working_tree_dir
 
 import io
 from datetime import datetime, timedelta
@@ -15,13 +18,6 @@ import os
 import psycopg2
 from pathlib import Path
 # from pandas.core.frame import DataFrame
-
-# parent_dir = Path(r'C:\John_folder\Current_focus\0_host_covid_19_plots_project\covid-19_vaccination_postgres')
-
-parent_dir = Path(os.path.realpath(__file__)).parent.absolute()
-print(parent_dir)
-
-# print(parent_dir)
 
 import boto3
 from botocore.exceptions import NoCredentialsError
@@ -36,7 +32,7 @@ port="5432"
 # if any(local_comp_user in os.environ.get("USERNAME") for local_comp_user in ['john', 'cyan8']):
 if os.environ.get("USERNAME") is not None:
     cred = configparser.ConfigParser()
-    cred.read(parent_dir/'config'/'credential.cfg')
+    cred.read(repo_loc + '/config/credential.cfg')
     ACCESS_KEY = cred['AWS_USER']['ACCESS_KEY']
     SECRET_KEY = cred['AWS_USER']['SECRET_KEY']
 

@@ -30,14 +30,16 @@ for module in modules:
             sys.path.append(str(fld))
 
 
-import etl
+
 import psycopg2
 from datetime import datetime, timedelta
 import pandas as pd
 import numpy as np
 import configparser
 import os
-import aws_util
+
+from src import etl
+from src import aws_util
 
 ###############################################################################
 

@@ -1,3 +1,0 @@
-*/30 * * * * bash ~/vacquishcovid19/run_app.sh
-0 11 * * * bash ~/vacquishcovid19/update_files_db.sh
-0 21 * * * bash ~/vacquishcovid19/update_files_db.sh

@@ -1,6 +1,6 @@
 import psycopg2
-from sql_queries import create_table_dict, create_unique_index_dict, drop_table_queries
-import aws_util
+from src.sql_queries import create_table_dict, create_unique_index_dict, drop_table_queries
+from src import aws_util
 
 
 def create_database(db_name):

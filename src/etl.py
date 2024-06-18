@@ -2,17 +2,23 @@
 Author: John Yang
 
 '''
+import git
+repo = git.Repo('.', search_parent_directories=True)
+repo_loc = repo.working_tree_dir
 
 import os
+import sys
+from pathlib import Path
+
 import glob
 import psycopg2
 import pandas as pd
 import numpy as np
-from sql_queries import *
+from src.sql_queries import *
 import configparser
 from datetime import datetime, date, timedelta
 
-import aws_util
+from src import aws_util
 
 config = configparser.ConfigParser()
 config.read('dl.cfg')
