@@ -5,3 +5,7 @@ credential.cfg
 *.pyc
 *.pyc
 temp-plot.html
+
+vac_covid_env
+
+.vscode

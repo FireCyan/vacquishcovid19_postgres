@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import download_file
-import etl
+from src import download_file
+from src import etl
 
 ##########################
 # Download updated data

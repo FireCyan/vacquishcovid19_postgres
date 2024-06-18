@@ -37,9 +37,9 @@ CREATE TABLE IF NOT EXISTS vac (
     date_string text,
     date_org text,
     vaccine text,
-    total_vaccinations int,
-    people_vaccinated int,
-    people_fully_vaccinated int
+    total_vaccinations bigint,
+    people_vaccinated bigint,
+    people_fully_vaccinated bigint
 )
 """)
 
