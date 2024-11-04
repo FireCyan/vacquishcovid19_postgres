@@ -15,7 +15,7 @@ import traceback
 
 from dash.dependencies import Output, Input, State
 import dash
-import dash_core_components as dcc
+from dash import dcc
 # https://community.plotly.com/t/its-possible-to-raise-prevent-update-for-only-one-callback-output/30973
 from dash.dash import no_update
 from dash.exceptions import PreventUpdate

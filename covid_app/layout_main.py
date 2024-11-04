@@ -8,8 +8,8 @@ Created on Sun Apr 11 14:30:07 2021
 # Initial imports
 
 import dash
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc
+from dash import html
 # import dash_table
 import plotly
 import plotly.express as px
@@ -26,7 +26,7 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 
-from jupyter_dash import JupyterDash
+# from jupyter_dash import JupyterDash
 import base64
 
 import query_processing as qp

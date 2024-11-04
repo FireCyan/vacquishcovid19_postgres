@@ -6,8 +6,8 @@ AWS functions such as
 Author: john.yang 2021-04-17
 '''
 import git
-repo = git.Repo('.', search_parent_directories=True)
-repo_loc = repo.working_tree_dir
+import os
+repo_loc = os.path.dirname(os.path.abspath(__file__))
 
 import io
 from datetime import datetime, timedelta
@@ -20,38 +20,77 @@ from pathlib import Path
 # from pandas.core.frame import DataFrame
 
 import boto3
-from botocore.exceptions import NoCredentialsError
+from botocore.exceptions import NoCredentialsError, ProfileNotFound
 
-# local_comp = False
+# Set the default region
+REGION = "ap-southeast-2"
+port = "5432"
 
-host = "covid19.cluster-cuwrjlvxl5qu.ap-southeast-2.rds.amazonaws.com"
-# Before 20240615 update, was "covid19.cuwrjlvxl5qu.ap-southeast-2.rds.amazonaws.com"
-username = "postgres"
-port="5432"
+try:
 
-# if any(local_comp_user in os.environ.get("USERNAME") for local_comp_user in ['john', 'cyan8']):
-if os.environ.get("USERNAME") is not None:
-    cred = configparser.ConfigParser()
-    cred.read(repo_loc + '/config/credential.cfg')
-    ACCESS_KEY = cred['AWS_USER']['ACCESS_KEY']
-    SECRET_KEY = cred['AWS_USER']['SECRET_KEY']
+    # Fetching RDS host from environment variables
+    host = os.environ.get("DB_HOST")
+    if host is None:
+        # Optionally, use AWS Secrets Manager if the host is stored as a secret
+        session = boto3.Session()
+        secrets_client = session.client('secretsmanager', region_name=REGION)
+        secret_name = "rds/db-host"  # Name of your secret in Secrets Manager
 
-    password = cred['RDS']['PASSWORD']
-    port = "5432"
+        try:
+            response = secrets_client.get_secret_value(SecretId=secret_name)
+            host = response['SecretString']
+        except secrets_client.exceptions.ResourceNotFoundException:
+            raise Exception("RDS host not found in environment or Secrets Manager.")
 
+    # Check if running locally with credentials file
+    if os.environ.get("USERNAME") is not None:
+        cred = configparser.ConfigParser()
 
-else:
-    
-    username="cyan8388"
-    REGION="ap-southeast-2"
+        cred.read(repo_loc + '/config/credential.cfg')
+        ACCESS_KEY = cred['AWS_USER']['ACCESS_KEY']
+        SECRET_KEY = cred['AWS_USER']['SECRET_KEY']
+        password = cred['RDS']['PASSWORD']
 
-    #gets the credentials from .aws/credentials
-    session = boto3.Session(profile_name=username)
-    client = session.client('rds')
+    # Check if environment variables for AWS credentials are available
+    elif os.environ.get("AWS_ACCESS_KEY_ID") is not None and os.environ.get("AWS_SECRET_ACCESS_KEY") is not None:
+        ACCESS_KEY = os.environ.get("AWS_ACCESS_KEY_ID")
+        SECRET_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
 
-    password = client.generate_db_auth_token(DBHostname=host, Port=port, DBUsername=username, Region=REGION) 
+        # Use the credentials to create a session
+        session = boto3.Session(
+            aws_access_key_id=ACCESS_KEY,
+            aws_secret_access_key=SECRET_KEY,
+            region_name=REGION
+        )
 
+        username = os.environ.get("DB_USERNAME", "default_username")
+        client = session.client('rds')
+        password = client.generate_db_auth_token(DBHostname=host, Port=port, DBUsername=username, Region=REGION)
 
+     # Attempt to use AWS credentials from the default profile or from the EC2 instance role
+    else:
+        try:
+            # Try to create a session using default credentials (e.g., from ~/.aws/credentials or IAM role on EC2)
+            session = boto3.Session()
+            client = session.client('rds')
+            password = client.generate_db_auth_token(DBHostname=host, Port=port, DBUsername=os.environ.get("DB_USERNAME", "default_username"), Region=REGION)
+
+        except (NoCredentialsError, ProfileNotFound):
+            raise Exception("No valid AWS credentials found. Please provide credentials through environment variables, AWS profile, or IAM role.")
+
+        
+        username="cyan8388"
+        REGION="ap-southeast-2"
+
+        #gets the credentials from .aws/credentials
+        session = boto3.Session(profile_name=username)
+        client = session.client('rds')
+
+        password = client.generate_db_auth_token(DBHostname=host, Port=port, DBUsername=username, Region=REGION) 
+
+except Exception as e:
+    print(f"Error obtaining credentials: {e}")
+    raise
 ###################################
 # AWS RDS connection
 ###################################
