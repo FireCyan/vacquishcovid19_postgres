@@ -41,8 +41,6 @@ for module in modules:
         if re.search('__pycache__', str(fld)) is None and re.search('\.git', str(fld)) is None and str(fld) not in sys.path: 
             sys.path.append(str(fld))
 
-
-from jupyter_dash import JupyterDash
 import plotly.express as px
 import plotly.tools as tls
 import plotly.graph_objects as go

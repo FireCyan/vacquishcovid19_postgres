@@ -7,7 +7,9 @@ Author: john.yang 2021-04-17
 '''
 import git
 import os
-repo_loc = os.path.dirname(os.path.abspath(__file__))
+current_path = os.path.dirname(os.path.abspath(__file__))
+repo = git.Repo(current_path, search_parent_directories=True)
+repo_loc = repo.working_tree_dir
 
 import io
 from datetime import datetime, timedelta
@@ -47,9 +49,13 @@ try:
         cred = configparser.ConfigParser()
 
         cred.read(repo_loc + '/config/credential.cfg')
+
+        print(repo_loc + '/config/credential.cfg')
         ACCESS_KEY = cred['AWS_USER']['ACCESS_KEY']
         SECRET_KEY = cred['AWS_USER']['SECRET_KEY']
         password = cred['RDS']['PASSWORD']
+
+        username = cred['AWS_USER']['USERNAME']
 
     # Check if environment variables for AWS credentials are available
     elif os.environ.get("AWS_ACCESS_KEY_ID") is not None and os.environ.get("AWS_SECRET_ACCESS_KEY") is not None:
@@ -71,22 +77,15 @@ try:
     else:
         try:
             # Try to create a session using default credentials (e.g., from ~/.aws/credentials or IAM role on EC2)
+
+            username = os.environ.get("DB_USERNAME", "default_username")
             session = boto3.Session()
+            
             client = session.client('rds')
-            password = client.generate_db_auth_token(DBHostname=host, Port=port, DBUsername=os.environ.get("DB_USERNAME", "default_username"), Region=REGION)
+            password = client.generate_db_auth_token(DBHostname=host, Port=port, DBUsername=username, Region=REGION)
 
         except (NoCredentialsError, ProfileNotFound):
             raise Exception("No valid AWS credentials found. Please provide credentials through environment variables, AWS profile, or IAM role.")
-
-        
-        username="cyan8388"
-        REGION="ap-southeast-2"
-
-        #gets the credentials from .aws/credentials
-        session = boto3.Session(profile_name=username)
-        client = session.client('rds')
-
-        password = client.generate_db_auth_token(DBHostname=host, Port=port, DBUsername=username, Region=REGION) 
 
 except Exception as e:
     print(f"Error obtaining credentials: {e}")
