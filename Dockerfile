@@ -1,4 +1,4 @@
-# Use Python 3.7 as the base image
+# Use Python 3.9 as the base image
 FROM python:3.9-slim
 
 # Install necessary build dependencies
