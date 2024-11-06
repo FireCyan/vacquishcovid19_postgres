@@ -15,7 +15,7 @@ import traceback
 
 from dash.dependencies import Output, Input, State
 import dash
-import dash_core_components as dcc
+from dash import dcc
 # https://community.plotly.com/t/its-possible-to-raise-prevent-update-for-only-one-callback-output/30973
 from dash.dash import no_update
 from dash.exceptions import PreventUpdate
@@ -41,8 +41,6 @@ for module in modules:
         if re.search('__pycache__', str(fld)) is None and re.search('\.git', str(fld)) is None and str(fld) not in sys.path: 
             sys.path.append(str(fld))
 
-
-from jupyter_dash import JupyterDash
 import plotly.express as px
 import plotly.tools as tls
 import plotly.graph_objects as go

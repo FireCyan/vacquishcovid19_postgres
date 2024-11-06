@@ -1,5 +1,5 @@
 # Use Python 3.7 as the base image
-FROM python:3.7-slim
+FROM python:3.9-slim
 
 # Install necessary build dependencies
 RUN apt-get update && \
@@ -13,16 +13,20 @@ RUN git config --global credential.helper '!aws codecommit credential-helper $@'
 # Clone the GitHub repository (replace with your repository URL if needed)
 RUN git clone https://github.com/FireCyan/vacquishcovid19_postgres.git /app
 
-# checkout to a particular branch
-# WORKDIR /app
-# RUN git checkout docker_dev
-
-# Set the working directory and copy the application code into the container
+# Set the working directory
 WORKDIR /app
-COPY . /app
+
+# Copy requirements.txt into the image
+COPY requirements.txt /app/
+
+# checkout to a particular branch
+# RUN git checkout docker_dev
 
 # Install Python dependencies globally
 RUN pip3 install -r requirements.txt
+
+# Copy the rest of the application code into the image
+COPY . /app
 
 # Expose any ports if necessary
 EXPOSE 8052
